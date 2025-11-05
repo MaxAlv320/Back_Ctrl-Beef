@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import { connectDB } from "./Config/config.js";
 import userRoutes from "./Routes/user.routes.js";
 import productRoutes from "./Routes/product.routes.js";
+//import { generateAppToken } from "./Helpers/jwt.helper.js";
 
 dotenv.config();
 const app = express();
@@ -16,4 +17,6 @@ app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+//console.log(generateAppToken())
 

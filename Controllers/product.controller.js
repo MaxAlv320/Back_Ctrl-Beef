@@ -13,7 +13,7 @@ export const getProducts = async (req, res) => {
 // Crear producto
 export const createProduct = async (req, res) => {
   try {
-    const { name, description, category, price, image, available } = req.body;
+    const { name, description, category, price, available } = req.body;
 
     if (!name || !category || !price) {
       return res.status(400).json({ message: "Campos requeridos faltantes" });
@@ -24,7 +24,6 @@ export const createProduct = async (req, res) => {
       description,
       category,
       price,
-      image,
       available
     });
 
