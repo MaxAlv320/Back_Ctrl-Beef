@@ -34,3 +34,24 @@ export const login = async (req, res) => {
   }
 };
 
+export const getLogin = async (req, res) => {
+  try {
+    // Obtenemos el token del header
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) return res.status(401).json({ message: "No token provided" });
+
+    // Verificamos el token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Buscamos al usuario por su ID (desde el token)
+    const user = await User.findById(decoded.id).select("-password");
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Enviamos los datos del usuario autenticado
+    res.json({ message: "Authenticated user", user });
+  } catch (error) {
+    res.status(401).json({ message: "Invalid or expired token" });
+  }
+};
+
+
