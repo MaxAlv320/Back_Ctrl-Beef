@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import { connectDB } from "./Config/config.js";
 import userRoutes from "./Routes/user.routes.js";
 import productRoutes from "./Routes/product.routes.js";
+import itemRoutes from "./Routes/item.routes.js"
 import cors from "cors";
 //import { generateAppToken } from "./Helpers/jwt.helper.js";
 
@@ -21,8 +22,12 @@ connectDB();
 // Rutas principales
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/items", itemRoutes);
+
+
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
-//console.log(generateAppToken())
+//console.loapp.use("/api/items", itemRoutes);
+
 

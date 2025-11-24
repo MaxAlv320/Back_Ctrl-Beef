@@ -13,10 +13,14 @@ export const getProducts = async (req, res) => {
 // Crear producto
 export const createProduct = async (req, res) => {
   try {
-    const { name, description, category, price, available } = req.body;
+    const { name, description, category, price, available, ingredients } = req.body;
 
-    if (!name || !category || !price) {
+    if (!name || !category || !price || !ingredients) {
       return res.status(400).json({ message: "Campos requeridos faltantes" });
+    }
+
+    if (!Array.isArray(ingredients) || ingredients.length === 0) {
+      return res.status(400).json({ message: "Debes incluir ingredientes" });
     }
 
     const newProduct = await Product.create({
@@ -24,7 +28,8 @@ export const createProduct = async (req, res) => {
       description,
       category,
       price,
-      available
+      available,
+      ingredients
     });
 
     res.status(201).json(newProduct);
@@ -61,3 +66,4 @@ export const deleteProduct = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
