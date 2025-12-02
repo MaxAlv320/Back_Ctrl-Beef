@@ -1,0 +1,18 @@
+MONGO_URI=mongodb+srv://hola2323:hola2323@utrtest.yltvkt3.mongodb.net/Ctrl_Beef?retryWrites=true&w=majority&appName=utrTest
+USR=hola2323
+PASSWORD=hola2323
+CLUSTER=utrtest.yltvkt3.mongodb.net
+JWT_SECRET=proyect0W3bD3vel0p
+APP_NAME=CtrlBeef
+APP_SECRET=appSup3rS3cr3t0
+
+
+
+{
+  "name": "Hamburguesa clásica",
+  "description": "Carne 100% res",
+  "category": "Hamburguesas",
+  "price": 99,
+  "image": "https://www.recetasnestle.com.ec/sites/default/files/srh_recipes/4e4293857c03d819e4ae51de1e86d66a.jpg",
+  "available": true
+}
