@@ -13,23 +13,17 @@ export const getProducts = async (req, res) => {
 // Crear producto
 export const createProduct = async (req, res) => {
   try {
-    const { name, description, category, price, available, ingredients } = req.body;
+    const { name, description, category, price, available} = req.body;
 
-    if (!name || !category || !price || !ingredients) {
+    if (!name || !category || !price) {
       return res.status(400).json({ message: "Campos requeridos faltantes" });
     }
-
-    if (!Array.isArray(ingredients) || ingredients.length === 0) {
-      return res.status(400).json({ message: "Debes incluir ingredientes" });
-    }
-
     const newProduct = await Product.create({
       name,
       description,
       category,
       price,
-      available,
-      ingredients
+      available
     });
 
     res.status(201).json(newProduct);

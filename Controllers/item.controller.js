@@ -22,6 +22,53 @@ export const getItemById = async (req, res) => {
   }
 };
 
+/**export const getItemByName = async (req, res) => {
+  try {
+    const items = await Item.find({ name: req.params.name });
+    if (items.length === 0) {
+      return res.status(404).json({ message: "Item not found" });
+    }
+
+    res.json(items);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};*/
+
+export const getItemByName = async (req, res) => {
+  try {
+    const items = await Item.find({ name: req.params.name });
+
+    if (items.length === 0) {
+      return res.status(404).json({ message: "Item not found" });
+    }
+
+    res.json(items);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+/**export const getItemByName = async (req, res) => {
+  try {
+    const items = await Item.find({ name: req.params.name });
+
+    if (items.length === 0) {
+      return res.status(404).json({ message: "Item not found" });
+    }
+
+    // Si solo hay uno, devuelve el objeto directamente
+    if (items.length === 1) {
+      return res.json(items[0]);
+    }
+
+    // Si hay varios, devuelve el array completo
+    res.json(items);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}; */
+
 // POST /items → Crear (admin)
 export const createItem = async (req, res) => {
   try {
@@ -54,6 +101,31 @@ export const updateItem = async (req, res) => {
   }
 };
 
+export const updateItemStock = async (req, res) => {
+  try {
+    const { amount } = req.body; // cantidad a aumentar (+) o disminuir (-)
+
+    // Validación: debe ser un número
+    if (typeof amount !== "number") {
+      return res.status(400).json({ message: "El campo 'amount' debe ser un número" });
+    }
+
+    const updatedItem = await Item.findByIdAndUpdate(
+      req.params.id,
+      { $inc: { stock: amount } }, // incrementa o decrementa stock
+      { new: true }
+    );
+
+    if (!updatedItem) {
+      return res.status(404).json({ message: "Item no encontrado" });
+    }
+
+    res.json(updatedItem);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // DELETE /items/:id → Eliminar (admin)
 export const deleteItem = async (req, res) => {
   try {
@@ -70,16 +142,34 @@ export const deleteItem = async (req, res) => {
 // POST /items/:id/buy → Reducir stock
 export const buyItem = async (req, res) => {
   try {
-    const item = await Item.findById(req.params.id);
+    let { items } = req.body;
 
-    if (!item) return res.status(404).json({ message: "Item not found" });
-    if (item.stock <= 0)
-      return res.status(400).json({ message: "Out of stock" });
+    if (!Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({ message: "Debes enviar al menos un item" });
+    }
 
-    item.stock -= 1;
-    await item.save();
+    const results = [];
 
-    res.json({ message: "Purchase successful", item });
+    for (const { id, quantity } of items) {
+      const item = await Item.findById(id);
+
+      if (!item) {
+        results.push({ id, status: "error", message: "Item not found" });
+        continue;
+      }
+
+      if (item.stock < quantity) {
+        results.push({ id, status: "error", message: "Not enough stock" });
+        continue;
+      }
+
+      item.stock -= quantity; // descontamos la cantidad seleccionada
+      await item.save();
+
+      results.push({ id, status: "success", message: `Purchased ${quantity}`, item });
+    }
+
+    res.json({ results });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

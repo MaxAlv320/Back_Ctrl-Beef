@@ -1,5 +1,5 @@
 import express from "express";
-import { verifyAppToken } from "../Helpers/jwt.helper.js";
+import { verifyAppToken, verifyUserToken, verifyAdmin } from "../Helpers/jwt.helper.js";
 
 import {
   getProducts,
@@ -11,10 +11,11 @@ import {
 const router = express.Router();
 
 // Rutas CRUD de productos
-router.get("/", getProducts);
-router.post("/", verifyAppToken, createProduct);
-router.put("/:id", verifyAppToken, updateProduct);
-router.delete("/:id", verifyAppToken, deleteProduct);
+router.get("/", verifyAppToken, verifyUserToken, getProducts);
+//router.get("/", verifyAppToken, getProducts)
+router.post("/", verifyAppToken, verifyUserToken, verifyAdmin, createProduct);
+router.put("/:id", verifyAppToken, verifyUserToken, verifyAdmin, updateProduct);
+router.delete("/:id", verifyAppToken, verifyUserToken, verifyAdmin, deleteProduct);
 
 export default router;
 

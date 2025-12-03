@@ -1,12 +1,15 @@
 import express from "express";
-import { getLogin, login, register } from "../Controllers/user.controller.js";
-import { generateAppToken, verifyAppToken } from "../Helpers/jwt.helper.js"; // Importa la función
+import { login, register, getUserByEmail, deleteUser, getAllUsers } from "../Controllers/user.controller.js";
+import { generateAppToken, verifyAdmin, verifyAppToken, verifyUserToken } from "../Helpers/jwt.helper.js"; // Importa la función
 
 const router = express.Router();
 
 router.post("/register", verifyAppToken, register);
-router.post("/login", login);
-router.get("/login", verifyAppToken, getLogin);
+router.post("/login", verifyAppToken, login);
+
+router.get("/", verifyAppToken, verifyUserToken, verifyAdmin, getAllUsers);
+router.get("/email/:email", verifyAppToken, verifyAdmin, verifyUserToken, getUserByEmail);
+router.delete("/:id", verifyAdmin, verifyUserToken, verifyAppToken, deleteUser);
 
 router.get("/generate-app-token", (req, res) => {
   try {
